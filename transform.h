@@ -16,9 +16,10 @@ using namespace Eigen;
 
 
 #pragma region 时间域
+/*世界时*/
 struct UTC
 {
-	unsigned short Year;
+	unsigned short Year;		
 	unsigned short Month;
 	unsigned short Day;
 	unsigned short Hour;
@@ -39,7 +40,7 @@ struct UTC
 		Year = Month = Day = Hour = Min = Sec = 0;
 	}
 };
-
+/*简化儒略日*/
 struct MJD
 {
 	int Days;
@@ -51,7 +52,7 @@ struct MJD
 		FracDay = 0.0;
 	}
 };
-
+/*GPS时*/
 struct GPSTIME
 {
 	unsigned short Week;
@@ -68,7 +69,7 @@ struct GPSTIME
 		SecOfWeek = s;
 	}
 };
-
+/*北斗时*/
 struct BDSTIME
 {
 	unsigned short Week;
@@ -80,7 +81,7 @@ struct BDSTIME
 		SecOfWeek = 0.0;
 	}
 };
-
+/*时间相互转化函数*/
 void TIME2MJD(UTC* utc, MJD* mjd);
 
 void MJD2TIME(UTC* utc, MJD* mjd);
@@ -101,11 +102,12 @@ void GPSTIME2TIME(GPSTIME* gpst, UTC* utc);
 #pragma endregion
 
 #pragma region 坐标域
+/*XYZ坐标系*/
 struct XYZ
 {
-	double X;
-	double Y;
-	double Z;
+	double X;		//m
+	double Y;		//m
+	double Z;		//m
 	XYZ()
 	{
 		X = Y = Z = 0;
@@ -117,12 +119,12 @@ struct XYZ
 		Z = z;
 	}
 };
-
+/*大地坐标系*/
 struct BLH
 {
-	double Lon;//经度
-	double Lat;//纬度
-	double Height;
+	double Lon;				//经度,deg
+	double Lat;				//纬度,deg
+	double Height;			//高程,m
 
 	BLH()
 	{
@@ -135,12 +137,15 @@ struct BLH
 		Height = h;
 	}
 };
-
+/*坐标系转换*/
 void BLH2XYZ(BLH* blh, XYZ* xyz, double e2, double a);
 
 void XYZ2BLH(BLH* blh, XYZ* xyz, double e2, double a);
 
 //转化为当地坐标系
+/*****************************/
+//	xyz1: 站心在xyz坐标系下坐标
+//	xyz2: 目标在xyz坐标系下坐标
 double XYZ2ENU(XYZ* xyz1, XYZ* xyz2, XYZ* enu, int sys);
 #pragma endregion
 

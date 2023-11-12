@@ -6,17 +6,17 @@
 
 Result_DATA::Result_DATA()
 {
-	OBSTIME = new GPSTIME();
-	Pos = new MatrixXd();
-	Vel = new MatrixXd();
-	Q_Pos = new MatrixXd();
-	Q_Vel = new MatrixXd();
-	thegma_Pos = new double;
-	thegma_Vel = new double;
-	PDOP = new double;
-	VDOP = new double;
-	SATES = new string();
-	*Pos = MatrixXd::Zero(5, 1);
+	OBSTIME = new GPSTIME();		
+	Pos = new MatrixXd();			
+	Vel = new MatrixXd();			
+	Q_Pos = new MatrixXd();			
+	Q_Vel = new MatrixXd();			
+	thegma_Pos = new double;		
+	thegma_Vel = new double;		
+	PDOP = new double;				
+	VDOP = new double;				
+	SATES = new string();			
+	*Pos = MatrixXd::Zero(5, 1);	
 	*Vel = MatrixXd::Zero(4, 1);
 	*Q_Pos = MatrixXd::Zero(5, 5);
 	*Q_Vel = MatrixXd::Zero(4, 4);

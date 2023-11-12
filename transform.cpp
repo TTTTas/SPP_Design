@@ -73,7 +73,8 @@ void BDSTIME2GPSTIME(GPSTIME* gpst, BDSTIME* bdst)
 	gpst->Week = bdst->Week + 1356;
 	gpst->SecOfWeek = bdst->SecOfWeek + 14;
 }
-
+/*****************************************/
+// 此处考虑到，GPS时转化到MJD，再由MJD转化到UTC容易因为浮点数而丢失秒的数据，故对算法进行优化，在秒数上只进行整数运算
 void GPSTIME2TIME(GPSTIME* gpst, UTC* utc)
 {
 	UTC* u = new UTC();

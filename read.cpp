@@ -84,7 +84,7 @@ unsigned int decode_RANGE(unsigned char* buff, int num, OBS_DATA* obs)
 		{
 		case SYS_GPS:
 			it = find(gps_prn.begin(), gps_prn.end(), prn);
-			if (it == gps_prn.end())
+			if (it == gps_prn.end())										//查找是否存在该卫星，不存在，添加卫星，存在，添加频点
 			{
 				obs->GPS_SATE.push_back(new Satellate());
 				obs->GPS_SATE.back()->PRN = prn;
@@ -169,7 +169,7 @@ unsigned int decode_GPSEPH(unsigned char* buff, EPOCH* gpse)
 	int wn = U4(buff + 24);
 	double toe = R8(buff + 32);
 	int check = 1;//默认不存在重复数据
-	for (int i = 0; i < gpse[prn - 1].num; i++)
+	for (int i = 0; i < gpse[prn - 1].num; i++)			//检查是否存在重复星历数据
 	{
 		if (wn == gpse[prn - 1].epoch[i]->toe_wn && toe == gpse[prn - 1].epoch[i]->toe_tow)
 			check = 0;

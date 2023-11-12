@@ -127,13 +127,13 @@ static uint32_t U4(uint8_t* p) { uint32_t u; memcpy(&u, p, 4); return u; }//4×Ö½
 static int32_t  I4(uint8_t* p) { int32_t  i; memcpy(&i, p, 4); return i; }//4×Ö½ÚÕûÊı
 static float    R4(uint8_t* p) { float    r; memcpy(&r, p, 4); return r; }//4×Ö½Úfloat
 static double   R8(uint8_t* p) { double   r; memcpy(&r, p, 8); return r; }//8×Ö½Údouble
-
+/*²éÕÒ±êÊ¶·ûAA4412*/
 int check_syn(unsigned char* buff, unsigned char data);
-
+/*Éú³ÉĞ£ÑéÂë*/
 unsigned int CRC32(const unsigned char* buff, int len);
-
+/*½âÂëĞ£ÑéÂë*/
 unsigned int UCRC32(const unsigned char* buff, int len);
-
+/*½âÂëÏµÍ³*/
 unsigned short decode_SYS(unsigned char* buff);
 
 /*
@@ -147,17 +147,18 @@ unsigned short decode_SYS(unsigned char* buff);
 * ²¨³¤
 * Í¨µÀ×´Ì¬
 */
+/*½âÂëÎÀĞÇµ¥Æµµã¹Û²âÊı¾İ*/
 unsigned int decode_RANGE_STAT(unsigned char* buff, Satellate* sate);
-
+/*½âÂëËùÓĞÎÀĞÇËùÓĞÆµµã¹Û²âÊı¾İ*/
 unsigned int decode_RANGE(unsigned char* buff, int num, OBS_DATA* obs);
-
+/*½âÂëµ¥¿ÅGPSÎÀĞÇĞÇÀú*/
 unsigned int decode_GPSEPH_STAT(unsigned char* buff, EPHEMERIS* epoch);
-
+/*½âÂëËùÓĞGPSÎÀĞÇĞÇÀú*/
 unsigned int decode_GPSEPH(unsigned char* buff, EPOCH* gpse);
-
+/*½âÂëµ¥¿ÅBDSÎÀĞÇĞÇÀú*/
 unsigned int decode_BDSEPH_STAT(unsigned char* buff, EPHEMERIS* bdse);
-
+/*½âÂëËùÓĞBDSÎÀĞÇĞÇÀú*/
 unsigned int decode_BDSEPH(unsigned char* buff, EPOCH* bdse);
-
+/*¶ÁÈ¡ÎÄ¼şÊı¾İ*/
 int readfile(const char* filepath, vector<OBS_DATA*>& range, EPOCH* gps, EPOCH* bds);
 

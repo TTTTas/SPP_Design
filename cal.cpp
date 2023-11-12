@@ -1,6 +1,7 @@
 #include"cal.h"
 #include"data.h"
 
+/*卫星粗差探测存储变量*/
 double GPS_GF[GPS_SAT_QUAN];
 double GPS_MW[GPS_SAT_QUAN];
 double GPS_PSE[6][GPS_SAT_QUAN];
@@ -15,6 +16,7 @@ double BDS_PHA[5][BDS_SAT_QUAN];
 double BDS_DOP[5][BDS_SAT_QUAN];
 int BDS_COUNT[BDS_SAT_QUAN];
 
+/*单历元星历数据存储*/
 EPHEMERIS* GPS_eph[GPS_SAT_QUAN];
 EPHEMERIS* BDS_eph[BDS_SAT_QUAN];
 

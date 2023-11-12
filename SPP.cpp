@@ -18,17 +18,20 @@ using namespace Eigen;
 
 int main()
 {
+    /*文件输入数据存储*/
     vector<OBS_DATA *> RANGE;
     EPOCH GPS_EPH[GPS_SAT_QUAN];
     EPOCH BDS_EPH[BDS_SAT_QUAN];
-    Result_DATA *result = new Result_DATA();
-
+    /*存储变量初始化*/
     initial();
-
-    double t = 1;
-    bool first = true;
-    FILE *DATA_Fobs;
-    FILE *Pos_Fobs;
+    /*结果存储变量*/
+    Result_DATA *result = new Result_DATA();
+    /*初始判断变量*/
+    double dt_epoch = 1;                                                    //文件流历元间时间差
+    bool first = true;                                                      //第一次解算标志
+    FILE *DATA_Fobs;                                                        //log文件指针
+    FILE *Pos_Fobs;                                                         //pos文件指针
+    /*网口输入数据相关变量*/
     int lenR, lenD;
     unsigned char curbuff[MAXRAWLEN];
     lenD = 0;
@@ -40,7 +43,7 @@ int main()
     int choice = 0;
     printf("请选择输入方式\n1. 文件\t2. 网口\n");
     cin >> choice;
-
+    /*获取文件生成时间*/
     time_t nowtime;
     time(&nowtime); // 获取1970年1月1日0点0分0秒到现在经过的秒数
     tm p;
@@ -62,8 +65,8 @@ int main()
         for (int i = 0; i < RANGE.size(); i++)
         {
             if (i > 0)
-                t = RANGE[i]->OBS_TIME->SecOfWeek - RANGE[i - 1]->OBS_TIME->SecOfWeek;
-            if (Cal_SPP(result, RANGE[i], GPS_EPH, BDS_EPH, t, first))
+                dt_epoch = RANGE[i]->OBS_TIME->SecOfWeek - RANGE[i - 1]->OBS_TIME->SecOfWeek;
+            if (Cal_SPP(result, RANGE[i], GPS_EPH, BDS_EPH, dt_epoch, first))
                 first = false;
             result->OUTPUT();
         }
@@ -105,8 +108,8 @@ int main()
                 }
                 else
                 {
-                    result->OUTPUT();
-                    result->WRITEOUTPUT(Pos_Fobs);
+                    result->OUTPUT();                       //输出至控制台
+                    result->WRITEOUTPUT(Pos_Fobs);          //输出至文件
                 }
             }
             else
