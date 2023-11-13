@@ -1,5 +1,5 @@
-#include"cal.h"
-#include"data.h"
+#include "cal.h"
+#include "data.h"
 
 /*卫星粗差探测存储变量*/
 double GPS_GF[GPS_SAT_QUAN];
@@ -17,8 +17,8 @@ double BDS_DOP[5][BDS_SAT_QUAN];
 int BDS_COUNT[BDS_SAT_QUAN];
 
 /*单历元星历数据存储*/
-EPHEMERIS* GPS_eph[GPS_SAT_QUAN];
-EPHEMERIS* BDS_eph[BDS_SAT_QUAN];
+EPHEMERIS *GPS_eph[GPS_SAT_QUAN];
+EPHEMERIS *BDS_eph[BDS_SAT_QUAN];
 
 unsigned int initial()
 {
@@ -42,7 +42,7 @@ double SQR(double x)
 	return x * x;
 }
 
-double Len(XYZ* pos)
+double Len(XYZ *pos)
 {
 	return sqrt(SQR(pos->X) + SQR(pos->Y) + SQR(pos->Z));
 }
@@ -51,8 +51,10 @@ double degree2rad(double degree)
 {
 	while (degree > 360 || degree < 0)
 	{
-		if (degree > 360)degree -= 360;
-		if (degree < 0)degree += 360;
+		if (degree > 360)
+			degree -= 360;
+		if (degree < 0)
+			degree += 360;
 	}
 	return degree * Pi / 180;
 }
@@ -69,7 +71,7 @@ double Cal_PDOP(MatrixXd Qxx)
 	return sqrt(Qxx(0, 0) + Qxx(1, 1) + Qxx(2, 2));
 }
 
-unsigned int Cal_LEAST_SQR(MatrixXd B, MatrixXd l, MatrixXd P, MatrixXd* Qxx, MatrixXd& x, double* thegma, double* DOP)
+unsigned int Cal_LEAST_SQR(MatrixXd B, MatrixXd l, MatrixXd P, MatrixXd *Qxx, MatrixXd &x, double *thegma, double *DOP)
 {
 	if (B.rows() != P.rows() || B.rows() != l.rows())
 		return 0;
@@ -82,8 +84,6 @@ unsigned int Cal_LEAST_SQR(MatrixXd B, MatrixXd l, MatrixXd P, MatrixXd* Qxx, Ma
 	return 1;
 }
 
-
-
 unsigned int decode_SYN(int sys, int signal)
 {
 	switch (sys)
@@ -91,12 +91,18 @@ unsigned int decode_SYN(int sys, int signal)
 	case SYS_GPS:
 		switch (signal)
 		{
-		case  0: return CODE_L1C; /* L1C/A */
-		case  5: return CODE_L2P; /* L2P    (OEM7) */
-		case  9: return CODE_L2W; /* L2P(Y),semi-codeless */
-		case 14: return CODE_L5Q; /* L5Q    (OEM6) */
-		case 16: return CODE_L1L; /* L1C(P) (OEM7) */
-		case 17: return CODE_L2S; /* L2C(M) (OEM7) */
+		case 0:
+			return CODE_L1C; /* L1C/A */
+		case 5:
+			return CODE_L2P; /* L2P    (OEM7) */
+		case 9:
+			return CODE_L2W; /* L2P(Y),semi-codeless */
+		case 14:
+			return CODE_L5Q; /* L5Q    (OEM6) */
+		case 16:
+			return CODE_L1L; /* L1C(P) (OEM7) */
+		case 17:
+			return CODE_L2S; /* L2C(M) (OEM7) */
 		default:
 			return UNKOWN;
 			break;
@@ -104,14 +110,22 @@ unsigned int decode_SYN(int sys, int signal)
 	case SYS_BDS:
 		switch (signal)
 		{
-		case  0: return CODE_L2I; /* B1I with D1 (OEM6) */
-		case  1: return CODE_L7I; /* B2I with D1 (OEM6) */
-		case  2: return CODE_L6I; /* B3I with D1 (OEM7) */
-		case  4: return CODE_L2I; /* B1I with D2 (OEM6) */
-		case  5: return CODE_L7I; /* B2I with D2 (OEM6) */
-		case  6: return CODE_L6I; /* B3I with D2 (OEM7) */
-		case  7: return CODE_L1P; /* B1C(P) (OEM7) */
-		case  9: return CODE_L5P; /* B2a(P) (OEM7) */
+		case 0:
+			return CODE_L2I; /* B1I with D1 (OEM6) */
+		case 1:
+			return CODE_L7I; /* B2I with D1 (OEM6) */
+		case 2:
+			return CODE_L6I; /* B3I with D1 (OEM7) */
+		case 4:
+			return CODE_L2I; /* B1I with D2 (OEM6) */
+		case 5:
+			return CODE_L7I; /* B2I with D2 (OEM6) */
+		case 6:
+			return CODE_L6I; /* B3I with D2 (OEM7) */
+		case 7:
+			return CODE_L1P; /* B1C(P) (OEM7) */
+		case 9:
+			return CODE_L5P; /* B2a(P) (OEM7) */
 		default:
 			return UNKOWN;
 			break;
@@ -126,26 +140,38 @@ double CODE2FREQ(int code)
 {
 	switch (code)
 	{
-	case 0:return 0;
-	case 1:return L1;
-	case 2:return L2;
-	case 3:return L2;
-	case 4:return L5;
-	case 5:return L1;
-	case 6:return L2;
-	case 7:return B1;
-	case 8:return B2;
-	case 9:return B3;
-	case 10:return B1_C;
-	case 11:return B2_a;
+	case 0:
+		return 0;
+	case 1:
+		return L1;
+	case 2:
+		return L2;
+	case 3:
+		return L2;
+	case 4:
+		return L5;
+	case 5:
+		return L1;
+	case 6:
+		return L2;
+	case 7:
+		return B1;
+	case 8:
+		return B2;
+	case 9:
+		return B3;
+	case 10:
+		return B1_C;
+	case 11:
+		return B2_a;
 	default:
 		return 0;
 		break;
 	}
 }
 
-//钟差改正
-double CORRECT_CLK(double t, EPHEMERIS* eph)
+// 钟差改正
+double CORRECT_CLK(double t, EPHEMERIS *eph)
 {
 	double correct_clk = t;
 	for (int i = 0; i < 10; i++)
@@ -155,8 +181,8 @@ double CORRECT_CLK(double t, EPHEMERIS* eph)
 	return eph->a_f0 + eph->a_f1 * (correct_clk - eph->toc) + eph->a_f2 * (correct_clk - eph->toc) * (correct_clk - eph->toc);
 }
 
-//星历位置
-unsigned int SAT_POS_CAL(double t, EPHEMERIS* eph, XYZ* Sat_Pos, double& clk, double dt, int SYS)
+// 星历位置
+unsigned int SAT_POS_CAL(double t, EPHEMERIS *eph, XYZ *Sat_Pos, double &clk, double dt, int SYS)
 {
 	double n, delt_t, M, E, E0, V, u_, u, r, i, dt0, F;
 	switch (SYS)
@@ -224,7 +250,7 @@ unsigned int SAT_POS_CAL(double t, EPHEMERIS* eph, XYZ* Sat_Pos, double& clk, do
 		Sat_Pos->Z = y * sin(i);
 		break;
 	case SYS_BDS:
-		if ((eph->PRN >= 1 && eph->PRN <= 5) || (eph->PRN >= 59 && eph->PRN <= 63))
+		if (fabs(eph->i0 - 0.0873) < 0.1 && fabs(eph->sqrt_A - 6493) < 1)		//通过轨道倾角和轨道根数判断是否为GEO卫星  i: 5/deg sqrt_A: 6493/sqrt_meter
 		{
 			L = eph->Omiga0 + eph->dot_Omiga * delt_t - omiga_earth * eph->toe_tow;
 			x0 = x * cos(L) - y * cos(i) * sin(L);
@@ -234,16 +260,13 @@ unsigned int SAT_POS_CAL(double t, EPHEMERIS* eph, XYZ* Sat_Pos, double& clk, do
 			MatrixXd R_Z(3, 3);
 			MatrixXd R_X(3, 3);
 			MatrixXd P(3, 1);
-			P_GK <<
-				x0,
+			P_GK << x0,
 				y0,
 				z0;
-			R_X <<
-				1, 0, 0,
+			R_X << 1, 0, 0,
 				0, cos(-5 * Pi / 180), sin(-5 * Pi / 180),
 				0, -sin(-5 * Pi / 180), cos(-5 * Pi / 180);
-			R_Z <<
-				cos(omiga_earth * delt_t), sin(omiga_earth * delt_t), 0,
+			R_Z << cos(omiga_earth * delt_t), sin(omiga_earth * delt_t), 0,
 				-sin(omiga_earth * delt_t), cos(omiga_earth * delt_t), 0,
 				0, 0, 1;
 			P = R_Z * R_X * P_GK;
@@ -266,9 +289,8 @@ unsigned int SAT_POS_CAL(double t, EPHEMERIS* eph, XYZ* Sat_Pos, double& clk, do
 	return 1;
 }
 
-
-//卫星高度角计算
-double Ele_Angle(XYZ* SatPos, XYZ* RcvPos, int sys)
+// 卫星高度角计算
+double Ele_Angle(XYZ *SatPos, XYZ *RcvPos, int sys)
 {
 	XYZ Satenu;
 	XYZ2ENU(RcvPos, SatPos, &Satenu, sys);
@@ -276,7 +298,7 @@ double Ele_Angle(XYZ* SatPos, XYZ* RcvPos, int sys)
 	return asin(Satenu.Z / Len(&Satenu));
 }
 
-//Hopefiled对流层改正(m)
+// Hopefiled对流层改正(m)
 double Hopefield(double E, double H)
 {
 	double Ts = T0 - 0.0065 * (H - H0);
@@ -292,14 +314,14 @@ double Hopefield(double E, double H)
 	return ZHD / md + ZWD / mw;
 }
 
-double Hopefield(XYZ* SatPos, XYZ* RcvPos, int sys)
+double Hopefield(XYZ *SatPos, XYZ *RcvPos, int sys)
 {
 	if (SatPos->X == 0 && SatPos->Y == 0 && SatPos->Z == 0)
 	{
 		return 0;
 	}
 	double E = rad2degree(Ele_Angle(SatPos, RcvPos, sys));
-	BLH* Rcvblh = new BLH();
+	BLH *Rcvblh = new BLH();
 	double H = 0;
 	switch (sys)
 	{
@@ -314,7 +336,7 @@ double Hopefield(XYZ* SatPos, XYZ* RcvPos, int sys)
 	default:
 		break;
 	}
-	if (H < 20e3 && H>-100)
+	if (H < 20e3 && H > -100)
 	{
 		double Ts = T0 - 0.0065 * (H - H0);
 		double hd = 40136 + 148.72 * (T0 - 273.16);
@@ -336,7 +358,7 @@ double Hopefield(XYZ* SatPos, XYZ* RcvPos, int sys)
 	}
 }
 
-double Klobuchar(XYZ* RcvPos, double E, double A, double alpha[4], double beta[4], double UT, double code, int sys)
+double Klobuchar(XYZ *RcvPos, double E, double A, double alpha[4], double beta[4], double UT, double code, int sys)
 {
 	if (!(alpha[0] * alpha[1] * alpha[2] * alpha[3] * beta[0] * beta[1] * beta[2] * beta[3]))
 		return -1;
@@ -357,15 +379,19 @@ double Klobuchar(XYZ* RcvPos, double E, double A, double alpha[4], double beta[4
 		XYZ2BLH(&RcvBLH, RcvPos, WGS84_e2, WGS84_a);
 		EA = 0.0137 / (E + 0.11) - 0.022;
 		B_IPP = RcvBLH.Lat + EA * cos(A);
-		if (B_IPP < -0.416)B_IPP = -0.416;
-		if (B_IPP > 0.416)B_IPP = 0.416;
+		if (B_IPP < -0.416)
+			B_IPP = -0.416;
+		if (B_IPP > 0.416)
+			B_IPP = 0.416;
 		L_IPP = RcvBLH.Lon + EA * sin(A) / cos(B_IPP);
 		B_m = B_IPP + 0.064 * cos(L_IPP - 1.617);
 		t = 43200 * L_IPP + UT;
 		while (t > 86400 || t < 0)
 		{
-			if (t > 86400)t -= 86400;
-			if (t < 0)t += 86400;
+			if (t > 86400)
+				t -= 86400;
+			if (t < 0)
+				t += 86400;
 		}
 		A_I = 0;
 		P_I = 0;
@@ -374,8 +400,10 @@ double Klobuchar(XYZ* RcvPos, double E, double A, double alpha[4], double beta[4
 			A_I += alpha[i] * pow(B_m, i);
 			P_I += beta[i] * pow(B_m, i);
 		}
-		if (A_I < 0)A_I = 0;
-		if (P_I < 72000)P_I = 72000;
+		if (A_I < 0)
+			A_I = 0;
+		if (P_I < 72000)
+			P_I = 72000;
 		Phase_I = 2 * Pi * (t - 50400) / P_I;
 		F = 1 + 16 * pow((0.53 - E), 3);
 		if (abs(Phase_I) < 1.57)
@@ -401,9 +429,12 @@ double Klobuchar(XYZ* RcvPos, double E, double A, double alpha[4], double beta[4
 			A_I += alpha[i] * pow(B_IPP / Pi, i);
 			P_I += beta[i] * pow(B_IPP / Pi, i);
 		}
-		if (A_I < 0)A_I = 0;
-		if (P_I < 72000)P_I = 72000;
-		if (P_I > 172800)P_I = 172800;
+		if (A_I < 0)
+			A_I = 0;
+		if (P_I < 72000)
+			P_I = 72000;
+		if (P_I > 172800)
+			P_I = 172800;
 		if (abs(t - 50400) < P_I / 4)
 		{
 			T_g = 5e-9 + A_I * cos(2 * Pi * (t - 50400) / P_I);
@@ -418,12 +449,9 @@ double Klobuchar(XYZ* RcvPos, double E, double A, double alpha[4], double beta[4
 		return 0;
 		break;
 	}
-
-
-
 }
 
-int CheckOBSConsist(Satellate* sate, int sys, double t, int index, bool& PSE_flag, bool& PHA_flag)
+int CheckOBSConsist(Satellate *sate, int sys, double t, int index, bool &PSE_flag, bool &PHA_flag)
 {
 	int prn = sate->PRN;
 	int Index = decode_SYN(sys, sate->SYG_TYPE[index]);
@@ -494,7 +522,7 @@ int CheckOBSConsist(Satellate* sate, int sys, double t, int index, bool& PSE_fla
 	}
 }
 
-int DetectOutlier(Satellate* sate, int sys, double t, int index1, int index2)
+int DetectOutlier(Satellate *sate, int sys, double t, int index1, int index2)
 {
 	int prn = sate->PRN;
 	double f1 = CODE2FREQ(decode_SYN(sys, sate->SYG_TYPE[index1]));
@@ -566,14 +594,13 @@ int DetectOutlier(Satellate* sate, int sys, double t, int index1, int index2)
 		return 0;
 		break;
 	}
-
 }
 #pragma region vector_EPOCH
-unsigned int setup_Pos(GPSTIME* OBS_TIME, MatrixXd Pos, vector<Satellate*> Sates, EPOCH* eph, bool first_flag, double f1, double f2, MatrixXd* B_Pos, MatrixXd* l_Pos, MatrixXd* P_Pos, string* sate_used)
+unsigned int setup_Pos(GPSTIME *OBS_TIME, MatrixXd Pos, vector<Satellate *> Sates, EPOCH *eph, bool first_flag, double f1, double f2, MatrixXd *B_Pos, MatrixXd *l_Pos, MatrixXd *P_Pos, string *sate_used)
 {
-	XYZ* sate_pos = new XYZ();
+	XYZ *sate_pos = new XYZ();
 	double clk = 0;
-	XYZ* RcvPos = new XYZ(Pos(0, 0), Pos(1, 0), Pos(2, 0));
+	XYZ *RcvPos = new XYZ(Pos(0, 0), Pos(1, 0), Pos(2, 0));
 	double dt_Rcv = Pos(3, 0);
 	int ROWS = 0;
 	MatrixXd x_Pos = MatrixXd::Zero(4, 1);
@@ -600,7 +627,7 @@ unsigned int setup_Pos(GPSTIME* OBS_TIME, MatrixXd Pos, vector<Satellate*> Sates
 		if (!(Sates[i]->LOCK_PSE[Index1] && Sates[i]->LOCK_PSE[Index2] && Sates[i]->LOCK_PHA[Index1] && Sates[i]->LOCK_PHA[Index2]))
 			continue;
 
-		//计算卫星位置、钟差
+		// 计算卫星位置、钟差
 		double ts = OBS_TIME->SecOfWeek - Sates[i]->PSERA[0] / velocity_c;
 		if (Sates[i]->SYS == SYS_BDS)
 			ts -= 14;
@@ -671,14 +698,14 @@ unsigned int setup_Pos(GPSTIME* OBS_TIME, MatrixXd Pos, vector<Satellate*> Sates
 	return ROWS;
 }
 
-unsigned int setup_Vel(GPSTIME* OBS_TIME, MatrixXd Pos, vector<Satellate*> Sates, EPOCH* eph, MatrixXd* B_Vel, MatrixXd* l_Vel, MatrixXd* P_Vel)
+unsigned int setup_Vel(GPSTIME *OBS_TIME, MatrixXd Pos, vector<Satellate *> Sates, EPOCH *eph, MatrixXd *B_Vel, MatrixXd *l_Vel, MatrixXd *P_Vel)
 {
-	XYZ* sate_pos0 = new XYZ();
-	XYZ* sate_pos1 = new XYZ();
+	XYZ *sate_pos0 = new XYZ();
+	XYZ *sate_pos1 = new XYZ();
 	double clk0 = 0;
 	double clk1 = 0;
-	double velocity[4] = { 0,0,0,0 };
-	XYZ* RcvPos = new XYZ(Pos(0, 0), Pos(1, 0), Pos(2, 0));
+	double velocity[4] = {0, 0, 0, 0};
+	XYZ *RcvPos = new XYZ(Pos(0, 0), Pos(1, 0), Pos(2, 0));
 	MatrixXd x_vel = MatrixXd::Zero(4, 1);
 	MatrixXd B_vel_new = MatrixXd::Zero(1, 4);
 	MatrixXd l_vel_new = MatrixXd::Zero(1, 1);
@@ -745,7 +772,7 @@ unsigned int setup_Vel(GPSTIME* OBS_TIME, MatrixXd Pos, vector<Satellate*> Sates
 	return ROWS;
 }
 
-unsigned int Cal_2(Result_DATA* data, OBS_DATA* obs, EPOCH* gpseph, EPOCH* bdseph, bool first_flag)
+unsigned int Cal_2(Result_DATA *data, OBS_DATA *obs, EPOCH *gpseph, EPOCH *bdseph, bool first_flag)
 {
 	MatrixXd B_Pos;
 	MatrixXd l_Pos;
@@ -755,17 +782,17 @@ unsigned int Cal_2(Result_DATA* data, OBS_DATA* obs, EPOCH* gpseph, EPOCH* bdsep
 	MatrixXd l_Vel;
 	MatrixXd P_Vel;
 	MatrixXd x_Vel;
-	double* thegma_Pos = new double;
-	double* PDOP = new double;
-	double* thegma_Vel = new double;
-	double* VDOP = new double;
+	double *thegma_Pos = new double;
+	double *PDOP = new double;
+	double *thegma_Vel = new double;
+	double *VDOP = new double;
 	int GPS_ROWS = 0;
 	int BDS_ROWS = 0;
 	for (int i = 0; i < 5; i++)
 	{
-		MatrixXd* temp_B = new MatrixXd(0, 4);
-		MatrixXd* temp_l = new MatrixXd(0, 1);
-		MatrixXd* temp_P = new MatrixXd();
+		MatrixXd *temp_B = new MatrixXd(0, 4);
+		MatrixXd *temp_l = new MatrixXd(0, 1);
+		MatrixXd *temp_P = new MatrixXd();
 		MatrixXd Rcvpos(4, 1);
 		Rcvpos = data->Pos->block<4, 1>(0, 0);
 		*data->SATES = "";
@@ -812,9 +839,9 @@ unsigned int Cal_2(Result_DATA* data, OBS_DATA* obs, EPOCH* gpseph, EPOCH* bdsep
 		delete temp_P;
 	}
 
-	MatrixXd* temp_B = new MatrixXd(0, 4);
-	MatrixXd* temp_l = new MatrixXd(0, 1);
-	MatrixXd* temp_P = new MatrixXd();
+	MatrixXd *temp_B = new MatrixXd(0, 4);
+	MatrixXd *temp_l = new MatrixXd(0, 1);
+	MatrixXd *temp_P = new MatrixXd();
 	GPS_ROWS = setup_Vel(obs->OBS_TIME, *data->Pos, obs->GPS_SATE, gpseph, temp_B, temp_l, temp_P);
 	B_Vel = *temp_B;
 	l_Vel = *temp_l;
@@ -841,7 +868,7 @@ unsigned int Cal_2(Result_DATA* data, OBS_DATA* obs, EPOCH* gpseph, EPOCH* bdsep
 	return 1;
 }
 
-unsigned int Cal_SPP(Result_DATA* data, OBS_DATA* obs, EPOCH* gpseph, EPOCH* bdseph, double dt_e, bool first_flag)
+unsigned int Cal_SPP(Result_DATA *data, OBS_DATA *obs, EPOCH *gpseph, EPOCH *bdseph, double dt_e, bool first_flag)
 {
 	data->OBSTIME = obs->OBS_TIME;
 	if (obs->GPS_SATE.size() + obs->BDS_SATE.size() < 5)
@@ -895,17 +922,15 @@ unsigned int Cal_SPP(Result_DATA* data, OBS_DATA* obs, EPOCH* gpseph, EPOCH* bds
 			data->solve_result = false;
 	}
 
-
 	return 1;
 }
 #pragma endregion
 
-
-unsigned int setup_Pos(GPSTIME* OBS_TIME, MatrixXd Pos, vector<Satellate*> Sates, EPHEMERIS** eph, bool first_flag, double f1, double f2, MatrixXd* B_Pos, MatrixXd* l_Pos, MatrixXd* P_Pos, string* sate_used)
+unsigned int setup_Pos(GPSTIME *OBS_TIME, MatrixXd Pos, vector<Satellate *> Sates, EPHEMERIS **eph, bool first_flag, double f1, double f2, MatrixXd *B_Pos, MatrixXd *l_Pos, MatrixXd *P_Pos, string *sate_used)
 {
-	XYZ* sate_pos = new XYZ();
+	XYZ *sate_pos = new XYZ();
 	double clk = 0;
-	XYZ* RcvPos = new XYZ(Pos(0, 0), Pos(1, 0), Pos(2, 0));
+	XYZ *RcvPos = new XYZ(Pos(0, 0), Pos(1, 0), Pos(2, 0));
 	double dt_Rcv = Pos(3, 0);
 	int ROWS = 0;
 	MatrixXd x_Pos = MatrixXd::Zero(4, 1);
@@ -918,7 +943,7 @@ unsigned int setup_Pos(GPSTIME* OBS_TIME, MatrixXd Pos, vector<Satellate*> Sates
 		if (Sates[i]->Outlier)
 			continue;
 		int prn = Sates[i]->PRN;
-		//if (prn == 26)
+		// if (prn == 26)
 		//	continue;
 		if (eph[prn - 1]->PRN != prn)
 			continue;
@@ -934,7 +959,7 @@ unsigned int setup_Pos(GPSTIME* OBS_TIME, MatrixXd Pos, vector<Satellate*> Sates
 		if (!(Sates[i]->LOCK_PSE[Index1] && Sates[i]->LOCK_PSE[Index2] && Sates[i]->LOCK_PHA[Index1] && Sates[i]->LOCK_PHA[Index2]))
 			continue;
 
-		//计算卫星位置、钟差
+		// 计算卫星位置、钟差
 		double ts = OBS_TIME->SecOfWeek - Sates[i]->PSERA[0] / velocity_c;
 		double dt = abs(ts - eph[prn - 1]->toe_tow + (OBS_TIME->Week - eph[prn - 1]->toe_wn) * 604800);
 		if (dt > 14400)
@@ -996,14 +1021,14 @@ unsigned int setup_Pos(GPSTIME* OBS_TIME, MatrixXd Pos, vector<Satellate*> Sates
 	return ROWS;
 }
 
-unsigned int setup_Vel(GPSTIME* OBS_TIME, MatrixXd Pos, vector<Satellate*> Sates, EPHEMERIS** eph, MatrixXd* B_Vel, MatrixXd* l_Vel, MatrixXd* P_Vel)
+unsigned int setup_Vel(GPSTIME *OBS_TIME, MatrixXd Pos, vector<Satellate *> Sates, EPHEMERIS **eph, MatrixXd *B_Vel, MatrixXd *l_Vel, MatrixXd *P_Vel)
 {
-	XYZ* sate_pos0 = new XYZ();
-	XYZ* sate_pos1 = new XYZ();
+	XYZ *sate_pos0 = new XYZ();
+	XYZ *sate_pos1 = new XYZ();
 	double clk0 = 0;
 	double clk1 = 0;
-	double velocity[4] = { 0,0,0,0 };
-	XYZ* RcvPos = new XYZ(Pos(0, 0), Pos(1, 0), Pos(2, 0));
+	double velocity[4] = {0, 0, 0, 0};
+	XYZ *RcvPos = new XYZ(Pos(0, 0), Pos(1, 0), Pos(2, 0));
 	MatrixXd x_vel = MatrixXd::Zero(4, 1);
 	MatrixXd B_vel_new = MatrixXd::Zero(1, 4);
 	MatrixXd l_vel_new = MatrixXd::Zero(1, 1);
@@ -1018,7 +1043,7 @@ unsigned int setup_Vel(GPSTIME* OBS_TIME, MatrixXd Pos, vector<Satellate*> Sates
 		if (eph[prn - 1]->PRN != prn)
 			continue;
 		double ts = OBS_TIME->SecOfWeek - Sates[i]->PSERA[0] / velocity_c;
-		
+
 		double dt = abs(ts - eph[prn - 1]->toe_tow + (OBS_TIME->Week - eph[prn - 1]->toe_wn) * 604800);
 		if (dt > 14400)
 			continue;
@@ -1062,7 +1087,7 @@ unsigned int setup_Vel(GPSTIME* OBS_TIME, MatrixXd Pos, vector<Satellate*> Sates
 	return ROWS;
 }
 
-unsigned int Cal_2(Result_DATA* data, OBS_DATA* obs, EPHEMERIS** gpseph, EPHEMERIS** bdseph, bool first_flag)
+unsigned int Cal_2(Result_DATA *data, OBS_DATA *obs, EPHEMERIS **gpseph, EPHEMERIS **bdseph, bool first_flag)
 {
 	MatrixXd B_Pos;
 	MatrixXd l_Pos;
@@ -1074,13 +1099,13 @@ unsigned int Cal_2(Result_DATA* data, OBS_DATA* obs, EPHEMERIS** gpseph, EPHEMER
 	MatrixXd x_Vel;
 	int GPS_ROWS = 0;
 	int BDS_ROWS = 0;
-	GPSTIME* OBS_TIME_bdst = new GPSTIME();
+	GPSTIME *OBS_TIME_bdst = new GPSTIME();
 	GPSTIME2BDSTIME(obs->OBS_TIME, OBS_TIME_bdst);
 	for (int i = 0; i < 5; i++)
 	{
-		MatrixXd* temp_B = new MatrixXd(0, 4);
-		MatrixXd* temp_l = new MatrixXd(0, 1);
-		MatrixXd* temp_P = new MatrixXd();
+		MatrixXd *temp_B = new MatrixXd(0, 4);
+		MatrixXd *temp_l = new MatrixXd(0, 1);
+		MatrixXd *temp_P = new MatrixXd();
 		MatrixXd Rcvpos(4, 1);
 		Rcvpos = data->Pos->block<4, 1>(0, 0);
 		*data->SATES = "";
@@ -1127,9 +1152,9 @@ unsigned int Cal_2(Result_DATA* data, OBS_DATA* obs, EPHEMERIS** gpseph, EPHEMER
 		delete temp_P;
 	}
 
-	MatrixXd* temp_B = new MatrixXd(0, 4);
-	MatrixXd* temp_l = new MatrixXd(0, 1);
-	MatrixXd* temp_P = new MatrixXd();
+	MatrixXd *temp_B = new MatrixXd(0, 4);
+	MatrixXd *temp_l = new MatrixXd(0, 1);
+	MatrixXd *temp_P = new MatrixXd();
 	GPS_ROWS = setup_Vel(obs->OBS_TIME, *data->Pos, obs->GPS_SATE, gpseph, temp_B, temp_l, temp_P);
 	B_Vel = *temp_B;
 	l_Vel = *temp_l;
@@ -1156,8 +1181,8 @@ unsigned int Cal_2(Result_DATA* data, OBS_DATA* obs, EPHEMERIS** gpseph, EPHEMER
 	return 1;
 }
 
-//位置解算
-unsigned int Cal_SPP(Result_DATA* data, OBS_DATA* obs, EPHEMERIS** gpseph, EPHEMERIS** bdseph, double dt_e, bool first_flag)
+// 位置解算
+unsigned int Cal_SPP(Result_DATA *data, OBS_DATA *obs, EPHEMERIS **gpseph, EPHEMERIS **bdseph, double dt_e, bool first_flag)
 {
 	data->OBSTIME = obs->OBS_TIME;
 	if (obs->GPS_SATE.size() + obs->BDS_SATE.size() < 5)
@@ -1173,7 +1198,7 @@ unsigned int Cal_SPP(Result_DATA* data, OBS_DATA* obs, EPHEMERIS** gpseph, EPHEM
 		double IF = 0;
 		int Index1 = 0;
 		int Index2 = 0;
-		while (CODE2FREQ(decode_SYN(obs->GPS_SATE[i]->SYS, obs->GPS_SATE[i]->SYG_TYPE[Index1])) != L1 && Index1<MAXNUM)
+		while (CODE2FREQ(decode_SYN(obs->GPS_SATE[i]->SYS, obs->GPS_SATE[i]->SYG_TYPE[Index1])) != L1 && Index1 < MAXNUM)
 			Index1++;
 		while (CODE2FREQ(decode_SYN(obs->GPS_SATE[i]->SYS, obs->GPS_SATE[i]->SYG_TYPE[Index2])) != L2 && Index2 < MAXNUM)
 			Index2++;
@@ -1216,18 +1241,17 @@ unsigned int Cal_SPP(Result_DATA* data, OBS_DATA* obs, EPHEMERIS** gpseph, EPHEM
 		}
 	}
 
-
 	return 1;
 }
 
-int decodestream(Result_DATA* result, unsigned char Buff[], int &d)
+int decodestream(Result_DATA *result, unsigned char Buff[], int &d)
 {
 	unsigned char TempBuff[MAXRAWLEN];
 	int len;
 	int msgID, msgTYPE;
-	GPSTIME* gpstime;
+	GPSTIME *gpstime;
 	int key = 0;
-	OBS_DATA* range = new OBS_DATA();
+	OBS_DATA *range = new OBS_DATA();
 	double dt_e = 0;
 	double temp_t = 0;
 	bool first = true;
@@ -1235,10 +1259,10 @@ int decodestream(Result_DATA* result, unsigned char Buff[], int &d)
 	int val;
 	i = 0;
 	val = 0;
-	while(1)
+	while (1)
 	{
 		/*文件预处理*/
-		for (; i < d - 2; i++) //同步
+		for (; i < d - 2; i++) // 同步
 		{
 			if (Buff[i] == OEM4SYNC1 && Buff[i + 1] == OEM4SYNC2 && Buff[i + 2] == OEM4SYNC3)
 			{
@@ -1246,28 +1270,28 @@ int decodestream(Result_DATA* result, unsigned char Buff[], int &d)
 			}
 		}
 		key++;
-		if (i + OEM4HLEN >= d)    //消息不完整，跳出
+		if (i + OEM4HLEN >= d) // 消息不完整，跳出
 			break;
 
 		for (j = 0; j < OEM4HLEN; j++)
-			TempBuff[j] = Buff[i + j]; //拷贝消息头到待解码缓存中
+			TempBuff[j] = Buff[i + j]; // 拷贝消息头到待解码缓存中
 
-		len = U2(TempBuff + 8) + OEM4HLEN;    //消息头+消息体长度
-		//if (OEM4HLEN != U1(TempBuff + 3))
+		len = U2(TempBuff + 8) + OEM4HLEN; // 消息头+消息体长度
+		// if (OEM4HLEN != U1(TempBuff + 3))
 		//{
 		//	i += len + 4;
 		//	continue;
-		//}
+		// }
 
-		if ((len + 4 + i) > d || len > MAXRAWLEN)  //消息不完整，跳出 
+		if ((len + 4 + i) > d || len > MAXRAWLEN) // 消息不完整，跳出
 			break;
 
-		for (j = OEM4HLEN; j < len + 4; j++)  //拷贝消息体到待解码缓存中
+		for (j = OEM4HLEN; j < len + 4; j++) // 拷贝消息体到待解码缓存中
 			TempBuff[j] = Buff[i + j];
 
 		msgID = U2(TempBuff + 4);
 
-		if (CRC32(TempBuff, len) != UCRC32(TempBuff + len, 4))//检验CRC32
+		if (CRC32(TempBuff, len) != UCRC32(TempBuff + len, 4)) // 检验CRC32
 		{
 			i += len + 4;
 			continue;
@@ -1283,7 +1307,7 @@ int decodestream(Result_DATA* result, unsigned char Buff[], int &d)
 		switch (msgID)
 		{
 		case ID_RANGE:
-			range->OBS_TIME->Week=gpstime->Week;
+			range->OBS_TIME->Week = gpstime->Week;
 			range->OBS_TIME->SecOfWeek = gpstime->SecOfWeek;
 			range->Sate_Num = U4(TempBuff + OEM4HLEN);
 			if (first)
@@ -1294,20 +1318,20 @@ int decodestream(Result_DATA* result, unsigned char Buff[], int &d)
 			val = decode_RANGE(TempBuff + OEM4HLEN + 4, range->Sate_Num, range);
 			if (Cal_SPP(result, range, GPS_eph, BDS_eph, dt_e, first))
 				first = false;
-			for (vector<Satellate*>::iterator it = range->GPS_SATE.begin(); it != range->GPS_SATE.end(); it++)
+			for (vector<Satellate *>::iterator it = range->GPS_SATE.begin(); it != range->GPS_SATE.end(); it++)
 			{
 				if (NULL != *it)
 				{
-					delete* it;
+					delete *it;
 					*it = NULL;
 				}
 			}
 			range->GPS_SATE.clear();
-			for (vector<Satellate*>::iterator it = range->BDS_SATE.begin(); it != range->BDS_SATE.end(); it++)
+			for (vector<Satellate *>::iterator it = range->BDS_SATE.begin(); it != range->BDS_SATE.end(); it++)
 			{
 				if (NULL != *it)
 				{
-					delete* it;
+					delete *it;
 					*it = NULL;
 				}
 			}
@@ -1326,13 +1350,12 @@ int decodestream(Result_DATA* result, unsigned char Buff[], int &d)
 		}
 		delete gpstime;
 		i += len + 4;
-
 	}
 	//---------------解码后，缓存的处理-------------------//
 	for (j = 0; j < d - i; j++)
 		Buff[j] = Buff[i + j];
 
-	d = j; //解码后，缓存中剩余的尚未解码的字节数
+	d = j; // 解码后，缓存中剩余的尚未解码的字节数
 	//---------------解码后，缓存的处理-------------------//
 	return val;
 }
