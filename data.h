@@ -35,17 +35,18 @@ public:
 	XYZ* Real_Pos;		//参考真值
 
 	Result_DATA();
-	int OUTPUT();
-	int WRITEOUTPUT(FILE* fpr);
+	int OUTPUT();					//控制台输出
+	int WRITEOUTPUT(FILE* fpr);		//文件输出
 };
 /*网口和存储结构相关配置*/
 class Configure
 {
 public:
-	static const char* NetIP;
-	static const unsigned short NetPort;
-	const char* ObsDatFile;
-	const char* ResDatFile;
+	static const char* NetIP;				//IP
+	static const unsigned short NetPort;	//端口
+	const char* ObsDatFile;					//log文件路径
+	const char* ResDatFile;					//pos文件路径
 };
 
+/*创建文件夹*/
 int createDirectory(string path);

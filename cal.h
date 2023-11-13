@@ -45,8 +45,10 @@ using namespace std;
 #define P0 1013.25
 #define RH0 0.5
 
+/*粗茶探测阈值*/
 #define GF_THRESH 0.05
 #define MW_THRESH 10
+
 /*初始化相关变量*/
 unsigned int initial();
 /*平方数*/
@@ -54,6 +56,7 @@ double SQR(double x);
 /*模长*/
 double Len(XYZ* pos);
 
+/*角度单位转换*/
 double degree2rad(double degree);
 
 double rad2degree(double rad);

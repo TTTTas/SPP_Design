@@ -49,14 +49,14 @@ int main()
     tm p;
     localtime_s(&p, &nowtime); // 将秒数转换为本地时间,年从1900算起,需要+1900,月为0-11,所以要+1
     string filetime = to_string(p.tm_year + 1900) + "_" + to_string(p.tm_mon + 1) + "_" + to_string(p.tm_mday) + "_" + to_string(p.tm_hour) + "_" + to_string(p.tm_min) + "_" + to_string(p.tm_sec);
-    string s1 = "C:\\Users\\Surface\\Desktop\\data\\logs\\";
-    createDirectory(s1);
-    s1 += filetime + string(".log");
-    string s2 = "C:\\Users\\Surface\\Desktop\\data\\Pos\\";
-    createDirectory(s2);
-    s2 += filetime + string(".pos");
-    CfgInfo.ObsDatFile = s1.c_str();
-    CfgInfo.ResDatFile = s2.c_str();
+    string logpath = "C:\\Users\\Surface\\Desktop\\data\\logs\\";
+    createDirectory(logpath);
+    logpath += filetime + string(".log");
+    string pospath = "C:\\Users\\Surface\\Desktop\\data\\Pos\\";
+    createDirectory(pospath);
+    pospath += filetime + string(".pos");
+    CfgInfo.ObsDatFile = logpath.c_str();
+    CfgInfo.ResDatFile = pospath.c_str();
 
     switch (choice)
     {
@@ -84,7 +84,7 @@ int main()
         }
         if ((Pos_Fobs = fopen(CfgInfo.ResDatFile, "w")) == NULL)
         {
-            printf("The obs file %s was not opened\n", CfgInfo.ResDatFile);
+            printf("The pos file %s was not opened\n", CfgInfo.ResDatFile);
             exit(0);
         }
         while (1)

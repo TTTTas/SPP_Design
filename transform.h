@@ -4,6 +4,7 @@
 using namespace std;
 using namespace Eigen;
 
+/*地球椭球相关参数*/
 #define WGS84_e2 0.0066943799013
 #define WGS84_a 6378137.0
 #define CGCS2000_e2 0.00669438002290
