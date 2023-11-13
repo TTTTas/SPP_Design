@@ -72,6 +72,9 @@ double CODE2FREQ(int code);
 //钟差改正
 double CORRECT_CLK(double t, EPHEMERIS* eph);
 
+//TGD计算
+double TGD(EPHEMERIS* e,double f,int sys);
+
 //星历位置
 unsigned int SAT_POS_CAL(double t, EPHEMERIS* eph, XYZ* xyz, double& clk, double dt, int SYS);
 
@@ -94,11 +97,17 @@ int CheckOBSConsist(Satellate* sate, int sys, double t, int index, bool& PSE_fla
 int DetectOutlier(Satellate* sate, int sys, double t, int index1, int index2);
 
 /*文件流下SPP解算*/
-//搭建位置解算构造矩阵
+//搭建位置解算构造矩阵(双频)
 unsigned int setup_Pos(GPSTIME* OBS_TIME, MatrixXd Pos, vector<Satellate*> Sates, EPOCH* eph, bool first_flag, double f1, double f2, MatrixXd* B_Pos, MatrixXd* l_Pos, MatrixXd* P_Pos, string* sate_used);
+
+//搭建位置解算构造矩阵(单频)
+unsigned int setup_Pos(GPSTIME* OBS_TIME, MatrixXd Pos, vector<Satellate*> Sates, EPOCH* eph, bool first_flag, double f, MatrixXd* B_Pos, MatrixXd* l_Pos, MatrixXd* P_Pos, string* sate_used);
 
 //搭建速度解算构造矩阵
 unsigned int setup_Vel(GPSTIME* OBS_TIME, MatrixXd Pos, vector<Satellate*> Sates, EPOCH* eph, MatrixXd* B_Vel, MatrixXd* l_Vel, MatrixXd* P_Vel);
+
+//单星解算
+unsigned int Cal_1(Result_DATA* data, OBS_DATA* obs, EPOCH* eph, bool first_flag);
 
 //GPS、BDS双星解算
 unsigned int Cal_2(Result_DATA* data, OBS_DATA* obs, EPOCH* gpseph, EPOCH* bdseph, bool first_flag);
