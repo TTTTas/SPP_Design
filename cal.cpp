@@ -102,6 +102,8 @@ unsigned int Cal_LEAST_SQR(MatrixXd B, MatrixXd l, MatrixXd P, MatrixXd *Qxx, Ma
 {
 	if (B.rows() != P.rows() || B.rows() != l.rows())
 		return 0;
+	if (B.rows() < B.cols())
+		return 0;
 	*Qxx = (B.transpose() * P * B).inverse();
 	x = *Qxx * B.transpose() * P * l;
 	MatrixXd v = B * x - l;
@@ -787,7 +789,7 @@ unsigned int setup_Pos(GPSTIME *OBS_TIME, MatrixXd Pos, vector<Satellate *> Sate
 			}
 		}
 		double tgd = 0;
-		tgd = TGD(eph[prn - 1].epoch[index], f, Sates[i]->SYS) > 0;
+		tgd = TGD(eph[prn - 1].epoch[index], f, Sates[i]->SYS);
 
 		for (int j = 0; j < 3; j++)
 		{
@@ -963,22 +965,32 @@ unsigned int Cal_1(Result_DATA *data, OBS_DATA *obs, EPOCH *eph, bool first_flag
 		}
 		if (Cal_LEAST_SQR(B_Pos, l_Pos, P_Pos, data->Q_Pos, x_Pos, thegma_Pos, PDOP))
 		{
-			(*data->Pos) += x_Pos;
 			data->thegma_Pos = thegma_Pos;
 			data->PDOP = PDOP;
 			switch (User_SYS)
 			{
 			case SYS_GPS:
+				(*data->Pos).block(0, 0, 4, 1) += x_Pos;
 				data->GPS_num = ROWS;
 				data->BDS_num = 0;
 				break;
 			case SYS_BDS:
+				(*data->Pos).block(0, 0, 3, 1) += x_Pos.block(0, 0, 3, 1);
+				(*data->Pos)(4, 0) += x_Pos(3, 0);
 				data->BDS_num = ROWS;
 				data->GPS_num = 0;
 				break;
 			default:
 				break;
 			}
+		}
+		else
+		{
+			data->solve_result = OBS_DATA_Loss;
+			delete temp_B;
+			delete temp_l;
+			delete temp_P;
+			return 0;
 		}
 		if (*thegma_Pos < 2)
 		{
@@ -1081,20 +1093,29 @@ unsigned int Cal_2(Result_DATA *data, OBS_DATA *obs, EPOCH *gpseph, EPOCH *bdsep
 			P_Pos.block(0, GPS_ROWS, GPS_ROWS, BDS_ROWS) = MatrixXd::Zero(GPS_ROWS, BDS_ROWS);
 			P_Pos.block(GPS_ROWS, 0, BDS_ROWS, GPS_ROWS) = MatrixXd::Zero(BDS_ROWS, GPS_ROWS);
 		}
-
 		if (Cal_LEAST_SQR(B_Pos, l_Pos, P_Pos, data->Q_Pos, x_Pos, thegma_Pos, PDOP))
 		{
-			(*data->Pos) += x_Pos;
+			if (GPS_set && BDS_set)
+				(*data->Pos) += x_Pos;
+			else if (GPS_set && !BDS_set)
+				(*data->Pos).block(0, 0, 4, 1) += x_Pos;
+			else if (!GPS_set && BDS_set)
+			{
+				(*data->Pos).block(0, 0, 3, 1) += x_Pos.block(0, 0, 3, 1);
+				(*data->Pos)(4, 0) += x_Pos(3, 0);
+			}
 			data->thegma_Pos = thegma_Pos;
 			data->PDOP = PDOP;
-			if (GPS_set)
-				data->GPS_num = GPS_ROWS;
-			else
-				data->GPS_num = 0;
-			if (BDS_set)
-				data->BDS_num = BDS_ROWS;
-			else
-				data->BDS_num = 0;
+			data->GPS_num = GPS_ROWS;
+			data->BDS_num = BDS_ROWS;
+		}
+		else
+		{
+			data->solve_result = OBS_DATA_Loss;
+			delete temp_B;
+			delete temp_l;
+			delete temp_P;
+			return 0;
 		}
 		if (*thegma_Pos < 2)
 		{
@@ -1186,15 +1207,15 @@ unsigned int Cal_SPP(Result_DATA *data, OBS_DATA *obs, EPOCH *gpseph, EPOCH *bds
 		{
 		case SYS_GPS:
 			if (Cal_1(data, obs, gpseph, first_flag))
-				data->solve_result = true;
+				data->solve_result = Success;
 			else
-				data->solve_result = false;
+				return 0;
 			break;
 		case SYS_BDS:
 			if (Cal_1(data, obs, bdseph, first_flag))
-				data->solve_result = true;
+				data->solve_result = Success;
 			else
-				data->solve_result = false;
+				return 0;
 		default:
 			break;
 		}
@@ -1202,9 +1223,9 @@ unsigned int Cal_SPP(Result_DATA *data, OBS_DATA *obs, EPOCH *gpseph, EPOCH *bds
 	else if (SYS_num == 2)
 	{
 		if (Cal_2(data, obs, gpseph, bdseph, first_flag))
-			data->solve_result = true;
+			data->solve_result = Success;
 		else
-			data->solve_result = false;
+			return 0;
 	}
 
 	return 1;
@@ -1270,6 +1291,91 @@ unsigned int setup_Pos(GPSTIME *OBS_TIME, MatrixXd Pos, vector<Satellate *> Sate
 
 		double len = sqrt(SQR(RcvPos->X - sate_pos->X) + SQR(RcvPos->Y - sate_pos->Y) + SQR(RcvPos->Z - sate_pos->Z));
 		double w_pos = IF - (len + dt_Rcv - velocity_c * clk + Hopefield(sate_pos, RcvPos, Sates[i]->SYS));
+		if (!first_flag)
+		{
+			if (abs(w_pos) > 10)
+				continue;
+		}
+		double l = (RcvPos->X - sate_pos->X) / len;
+		double m = (RcvPos->Y - sate_pos->Y) / len;
+		double n = (RcvPos->Z - sate_pos->Z) / len;
+		B_pos_new(0, 0) = l;
+		B_pos_new(0, 1) = m;
+		B_pos_new(0, 2) = n;
+		B_pos_new(0, 3) = 1;
+		l_pos_new(0, 0) = w_pos;
+		B_Pos->conservativeResize(B_Pos->rows() + 1, B_Pos->cols());
+		B_Pos->bottomRows(1) = B_pos_new;
+		l_Pos->conservativeResize(l_Pos->rows() + 1, l_Pos->cols());
+		l_Pos->bottomRows(1) = l_pos_new;
+		switch (Sates[i]->SYS)
+		{
+		case SYS_GPS:
+			*sate_used += "G" + to_string(Sates[i]->PRN);
+			break;
+		case SYS_BDS:
+			*sate_used += "C" + to_string(Sates[i]->PRN);
+			break;
+		default:
+			break;
+		}
+		ROWS++;
+	}
+	*P_Pos = MatrixXd::Identity(ROWS, ROWS);
+	delete sate_pos;
+	delete RcvPos;
+	return ROWS;
+}
+
+unsigned int setup_Pos(GPSTIME *OBS_TIME, MatrixXd Pos, vector<Satellate *> Sates, EPHEMERIS **eph, bool first_flag, double f, MatrixXd *B_Pos, MatrixXd *l_Pos, MatrixXd *P_Pos, string *sate_used)
+{
+	XYZ *sate_pos = new XYZ();
+	double clk = 0;
+	XYZ *RcvPos = new XYZ(Pos(0, 0), Pos(1, 0), Pos(2, 0));
+	double dt_Rcv = Pos(3, 0);
+	int ROWS = 0;
+	MatrixXd x_Pos = MatrixXd::Zero(4, 1);
+	MatrixXd B_pos_new = MatrixXd::Zero(1, 4);
+	MatrixXd l_pos_new = MatrixXd::Zero(1, 1);
+	for (int i = 0; i < Sates.size(); i++)
+	{
+		if (Sates[i]->Phase_NUM < 2)
+			continue;
+		if (Sates[i]->Outlier)
+			continue;
+		int prn = Sates[i]->PRN;
+		if (eph[prn - 1]->PRN != prn)
+			continue;
+		int Index = 0;
+		while (CODE2FREQ(decode_SYN(Sates[i]->SYS, Sates[i]->SYG_TYPE[Index])) != f && Index < MAXNUM)
+			Index++;
+		if (Index == MAXNUM)
+			continue;
+		if (!(Sates[i]->LOCK_PSE[Index] && Sates[i]->LOCK_PHA[Index]))
+			continue;
+
+		// ¼ÆËãÎÀÐÇÎ»ÖÃ¡¢ÖÓ²î
+		double ts = OBS_TIME->SecOfWeek - Sates[i]->PSERA[0] / velocity_c;
+		double dt = abs(ts - eph[prn - 1]->toe_tow + (OBS_TIME->Week - eph[prn - 1]->toe_wn) * 604800);
+		if (dt > 14400)
+			continue;
+
+		double tgd = 0;
+		tgd = TGD(eph[prn - 1], f, Sates[i]->SYS);
+
+		for (int j = 0; j < 3; j++)
+		{
+			clk = CORRECT_CLK(ts - clk, eph[prn - 1]);
+			SAT_POS_CAL(ts - clk + tgd, eph[prn - 1], sate_pos, clk, Sates[i]->PSERA[0] / velocity_c, Sates[i]->SYS);
+		}
+		if (!first_flag)
+		{
+			if (Ele_Angle(sate_pos, RcvPos, Sates[i]->SYS) < degree2rad(10))
+				continue;
+		}
+
+		double len = sqrt(SQR(RcvPos->X - sate_pos->X) + SQR(RcvPos->Y - sate_pos->Y) + SQR(RcvPos->Z - sate_pos->Z));
+		double w_pos = Sates[i]->PSERA[Index] - (len + dt_Rcv - velocity_c * clk + Hopefield(sate_pos, RcvPos, Sates[i]->SYS));
 		if (!first_flag)
 		{
 			if (abs(w_pos) > 10)
@@ -1372,6 +1478,109 @@ unsigned int setup_Vel(GPSTIME *OBS_TIME, MatrixXd Pos, vector<Satellate *> Sate
 	return ROWS;
 }
 
+unsigned int Cal_1(Result_DATA *data, OBS_DATA *obs, EPHEMERIS **eph, bool first_flag)
+{
+	MatrixXd B_Pos;
+	MatrixXd l_Pos;
+	MatrixXd P_Pos;
+	MatrixXd x_Pos;
+	MatrixXd B_Vel;
+	MatrixXd l_Vel;
+	MatrixXd P_Vel;
+	MatrixXd x_Vel;
+	int ROWS = 0;
+	GPSTIME *OBS_TIME_bdst = new GPSTIME();
+	GPSTIME2BDSTIME(obs->OBS_TIME, OBS_TIME_bdst);
+	for (int i = 0; i < 5; i++)
+	{
+		MatrixXd *temp_B = new MatrixXd(0, 4);
+		MatrixXd *temp_l = new MatrixXd(0, 1);
+		MatrixXd *temp_P = new MatrixXd();
+		MatrixXd Rcvpos(4, 1);
+		Rcvpos = data->Pos->block<4, 1>(0, 0);
+		*data->SATES = "";
+		switch (User_SYS)
+		{
+		case SYS_GPS:
+			if (phase_num == 1)
+				ROWS = setup_Pos(obs->OBS_TIME, Rcvpos, obs->GPS_SATE, eph, first_flag, L1, temp_B, temp_l, temp_P, data->SATES);
+			else if (phase_num == 2)
+				ROWS = setup_Pos(obs->OBS_TIME, Rcvpos, obs->GPS_SATE, eph, first_flag, L1, L2, temp_B, temp_l, temp_P, data->SATES);
+			break;
+		case SYS_BDS:
+			if (phase_num == 1)
+				ROWS = setup_Pos(OBS_TIME_bdst, Rcvpos, obs->BDS_SATE, eph, first_flag, B3, temp_B, temp_l, temp_P, data->SATES);
+			else if (phase_num == 2)
+				ROWS = setup_Pos(OBS_TIME_bdst, Rcvpos, obs->BDS_SATE, eph, first_flag, B1, B3, temp_B, temp_l, temp_P, data->SATES);
+		default:
+			break;
+		}
+		B_Pos = *temp_B;
+		l_Pos = *temp_l;
+		P_Pos = *temp_P;
+		if (ROWS == 0)
+		{
+			delete temp_B;
+			delete temp_l;
+			delete temp_P;
+			return 0;
+		}
+		if (Cal_LEAST_SQR(B_Pos, l_Pos, P_Pos, data->Q_Pos, x_Pos, data->thegma_Pos, data->PDOP))
+		{
+			switch (User_SYS)
+			{
+			case SYS_GPS:
+				(*data->Pos).block(0, 0, 4, 1) += x_Pos;
+				data->GPS_num = ROWS;
+				data->BDS_num = 0;
+				break;
+			case SYS_BDS:
+				(*data->Pos).block(0, 0, 3, 1) += x_Pos.block(0, 0, 3, 1);
+				(*data->Pos)(4, 0) += x_Pos(3, 0);
+				data->BDS_num = ROWS;
+				data->GPS_num = 0;
+				break;
+			default:
+				break;
+			}
+		}
+		else
+		{
+			data->solve_result = OBS_DATA_Loss;
+			delete temp_B;
+			delete temp_l;
+			delete temp_P;
+			return 0;
+		}
+		if (*data->thegma_Pos < 2)
+		{
+			first_flag = false;
+		}
+		delete temp_B;
+		delete temp_l;
+		delete temp_P;
+	}
+
+	MatrixXd *temp_B = new MatrixXd(0, 4);
+	MatrixXd *temp_l = new MatrixXd(0, 1);
+	MatrixXd *temp_P = new MatrixXd();
+	ROWS = setup_Vel(obs->OBS_TIME, *data->Pos, obs->GPS_SATE, eph, temp_B, temp_l, temp_P);
+	B_Vel = *temp_B;
+	l_Vel = *temp_l;
+	P_Vel = *temp_P;
+	temp_B->conservativeResize(0, 4);
+	temp_l->conservativeResize(0, 1);
+	if (Cal_LEAST_SQR(B_Vel, l_Vel, P_Vel, data->Q_Vel, x_Vel, data->thegma_Vel, data->VDOP))
+	{
+		(*data->Vel) = x_Vel;
+	}
+	delete temp_B;
+	delete temp_l;
+	delete temp_P;
+	delete OBS_TIME_bdst;
+	return 1;
+}
+
 unsigned int Cal_2(Result_DATA *data, OBS_DATA *obs, EPHEMERIS **gpseph, EPHEMERIS **bdseph, bool first_flag)
 {
 	MatrixXd B_Pos;
@@ -1386,22 +1595,30 @@ unsigned int Cal_2(Result_DATA *data, OBS_DATA *obs, EPHEMERIS **gpseph, EPHEMER
 	int BDS_ROWS = 0;
 	GPSTIME *OBS_TIME_bdst = new GPSTIME();
 	GPSTIME2BDSTIME(obs->OBS_TIME, OBS_TIME_bdst);
+	bool GPS_set, BDS_set;
 	for (int i = 0; i < 5; i++)
 	{
+		GPS_set = BDS_set = true;
 		MatrixXd *temp_B = new MatrixXd(0, 4);
 		MatrixXd *temp_l = new MatrixXd(0, 1);
 		MatrixXd *temp_P = new MatrixXd();
 		MatrixXd Rcvpos(4, 1);
 		Rcvpos = data->Pos->block<4, 1>(0, 0);
 		*data->SATES = "";
-		GPS_ROWS = setup_Pos(obs->OBS_TIME, Rcvpos, obs->GPS_SATE, gpseph, first_flag, L1, L2, temp_B, temp_l, temp_P, data->SATES);
+		if (phase_num == 1)
+			GPS_ROWS = setup_Pos(obs->OBS_TIME, Rcvpos, obs->GPS_SATE, gpseph, first_flag, L1, temp_B, temp_l, temp_P, data->SATES);
+		else if (phase_num == 2)
+			GPS_ROWS = setup_Pos(obs->OBS_TIME, Rcvpos, obs->GPS_SATE, gpseph, first_flag, L1, L2, temp_B, temp_l, temp_P, data->SATES);
 		B_Pos = *temp_B;
 		l_Pos = *temp_l;
 		P_Pos = *temp_P;
 		Rcvpos(3, 0) = (*data->Pos)(4, 0);
 		temp_B->conservativeResize(0, 4);
 		temp_l->conservativeResize(0, 1);
-		BDS_ROWS = setup_Pos(OBS_TIME_bdst, Rcvpos, obs->BDS_SATE, bdseph, first_flag, B1, B3, temp_B, temp_l, temp_P, data->SATES);
+		if (phase_num == 1)
+			BDS_ROWS = setup_Pos(OBS_TIME_bdst, Rcvpos, obs->BDS_SATE, bdseph, first_flag, B3, temp_B, temp_l, temp_P, data->SATES);
+		else if (phase_num == 2)
+			BDS_ROWS = setup_Pos(OBS_TIME_bdst, Rcvpos, obs->BDS_SATE, bdseph, first_flag, B1, B3, temp_B, temp_l, temp_P, data->SATES);
 		if (GPS_ROWS == 0 || BDS_ROWS == 0)
 		{
 			delete temp_B;
@@ -1411,23 +1628,52 @@ unsigned int Cal_2(Result_DATA *data, OBS_DATA *obs, EPHEMERIS **gpseph, EPHEMER
 			data->solve_result = Set_UP_B_fail;
 			return 0;
 		}
-		B_Pos.conservativeResize(GPS_ROWS + BDS_ROWS, 5);
-		l_Pos.conservativeResize(GPS_ROWS + BDS_ROWS, 1);
-		P_Pos.conservativeResize(GPS_ROWS + BDS_ROWS, GPS_ROWS + BDS_ROWS);
-		B_Pos.block(0, 4, GPS_ROWS, 1) = MatrixXd::Zero(GPS_ROWS, 1);
-		B_Pos.block(GPS_ROWS, 0, BDS_ROWS, 3) = temp_B->block(0, 0, BDS_ROWS, 3);
-		B_Pos.block(GPS_ROWS, 3, BDS_ROWS, 1) = MatrixXd::Zero(BDS_ROWS, 1);
-		B_Pos.block(GPS_ROWS, 4, BDS_ROWS, 1) = temp_B->block(0, 3, BDS_ROWS, 1);
-		l_Pos.bottomRows(BDS_ROWS) = *temp_l;
-		P_Pos.block(GPS_ROWS, GPS_ROWS, BDS_ROWS, BDS_ROWS) = *temp_P;
-		P_Pos.block(0, GPS_ROWS, GPS_ROWS, BDS_ROWS) = MatrixXd::Zero(GPS_ROWS, BDS_ROWS);
-		P_Pos.block(GPS_ROWS, 0, BDS_ROWS, GPS_ROWS) = MatrixXd::Zero(BDS_ROWS, GPS_ROWS);
-
+		if (GPS_ROWS != 0 && BDS_ROWS == 0)
+		{
+			BDS_set = false;
+		}
+		else if (GPS_ROWS != 0 && BDS_ROWS == 0)
+		{
+			GPS_set = false;
+			B_Pos = *temp_B;
+			l_Pos = *temp_l;
+			P_Pos = *temp_P;
+		}
+		else
+		{
+			B_Pos.conservativeResize(GPS_ROWS + BDS_ROWS, 5);
+			l_Pos.conservativeResize(GPS_ROWS + BDS_ROWS, 1);
+			P_Pos.conservativeResize(GPS_ROWS + BDS_ROWS, GPS_ROWS + BDS_ROWS);
+			B_Pos.block(0, 4, GPS_ROWS, 1) = MatrixXd::Zero(GPS_ROWS, 1);
+			B_Pos.block(GPS_ROWS, 0, BDS_ROWS, 3) = temp_B->block(0, 0, BDS_ROWS, 3);
+			B_Pos.block(GPS_ROWS, 3, BDS_ROWS, 1) = MatrixXd::Zero(BDS_ROWS, 1);
+			B_Pos.block(GPS_ROWS, 4, BDS_ROWS, 1) = temp_B->block(0, 3, BDS_ROWS, 1);
+			l_Pos.bottomRows(BDS_ROWS) = *temp_l;
+			P_Pos.block(GPS_ROWS, GPS_ROWS, BDS_ROWS, BDS_ROWS) = *temp_P;
+			P_Pos.block(0, GPS_ROWS, GPS_ROWS, BDS_ROWS) = MatrixXd::Zero(GPS_ROWS, BDS_ROWS);
+			P_Pos.block(GPS_ROWS, 0, BDS_ROWS, GPS_ROWS) = MatrixXd::Zero(BDS_ROWS, GPS_ROWS);
+		}
 		if (Cal_LEAST_SQR(B_Pos, l_Pos, P_Pos, data->Q_Pos, x_Pos, data->thegma_Pos, data->PDOP))
 		{
-			(*data->Pos) += x_Pos;
+			if (GPS_set && BDS_set)
+				(*data->Pos) += x_Pos;
+			else if (GPS_set && !BDS_set)
+				(*data->Pos).block(0, 0, 4, 1) += x_Pos;
+			else if (!GPS_set && BDS_set)
+			{
+				(*data->Pos).block(0, 0, 3, 1) += x_Pos.block(0, 0, 3, 1);
+				(*data->Pos)(4, 0) += x_Pos(3, 0);
+			}
 			data->GPS_num = GPS_ROWS;
 			data->BDS_num = BDS_ROWS;
+		}
+		else
+		{
+			data->solve_result = OBS_DATA_Loss;
+			delete temp_B;
+			delete temp_l;
+			delete temp_P;
+			return 0;
 		}
 		if (*data->thegma_Pos < 2)
 		{
@@ -1512,17 +1758,31 @@ unsigned int Cal_SPP(Result_DATA *data, OBS_DATA *obs, EPHEMERIS **gpseph, EPHEM
 			continue;
 		}
 	}
-	if (obs->GPS_SATE.size() != 0 && obs->BDS_SATE.size() != 0)
+	if (SYS_num == 1)
+	{
+		switch (User_SYS)
+		{
+		case SYS_GPS:
+			if (Cal_1(data, obs, gpseph, first_flag))
+				data->solve_result = Success;
+			else
+				return 0;
+			break;
+		case SYS_BDS:
+			if (Cal_1(data, obs, bdseph, first_flag))
+				data->solve_result = Success;
+			else
+				return 0;
+		default:
+			break;
+		}
+	}
+	else if (SYS_num == 2)
 	{
 		if (Cal_2(data, obs, gpseph, bdseph, first_flag))
-		{
 			data->solve_result = Success;
-			return 1;
-		}
 		else
-		{
 			return 0;
-		}
 	}
 
 	return 1;

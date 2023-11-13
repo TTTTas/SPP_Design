@@ -116,11 +116,17 @@ unsigned int Cal_2(Result_DATA* data, OBS_DATA* obs, EPOCH* gpseph, EPOCH* bdsep
 unsigned int Cal_SPP(Result_DATA* data, OBS_DATA* obs, EPOCH* gpseph, EPOCH* bdseph, double dt_e, bool first_flag);
 
 /*网口下位置解算*/
-//搭建位置解算构造矩阵
+//搭建位置解算构造矩阵(双频)
 unsigned int setup_Pos(GPSTIME* OBS_TIME, MatrixXd Pos, vector<Satellate*> Sates, EPHEMERIS** eph, bool first_flag, double f1, double f2, MatrixXd* B_Pos, MatrixXd* l_Pos, MatrixXd* P_Pos, string* sate_used);
+
+//搭建位置解算构造矩阵(单频)
+unsigned int setup_Pos(GPSTIME* OBS_TIME, MatrixXd Pos, vector<Satellate*> Sates, EPHEMERIS** eph, bool first_flag, double f, MatrixXd* B_Pos, MatrixXd* l_Pos, MatrixXd* P_Pos, string* sate_used);
 
 //搭建速度解算构造矩阵
 unsigned int setup_Vel(GPSTIME* OBS_TIME, MatrixXd Pos, vector<Satellate*> Sates, EPHEMERIS** eph, MatrixXd* B_Vel, MatrixXd* l_Vel, MatrixXd* P_Vel);
+
+//单星解算
+unsigned int Cal_1(Result_DATA* data, OBS_DATA* obs, EPHEMERIS** eph, bool first_flag);
 
 //GPS、BDS双星解算
 unsigned int Cal_2(Result_DATA* data, OBS_DATA* obs, EPHEMERIS** gpseph, EPHEMERIS** bdseph, bool first_flag);
