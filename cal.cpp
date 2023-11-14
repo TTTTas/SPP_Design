@@ -24,6 +24,7 @@ EPHEMERIS *BDS_eph[BDS_SAT_QUAN];
 int phase_num; // 单频or双频
 int SYS_num;   // 单星or双星
 int User_SYS;  // 单星下指定系统，默认GPS
+int Hop_used;  // 是否启用对流层改正
 
 unsigned int initial()
 {
@@ -61,6 +62,8 @@ unsigned int initial()
 			break;
 		}
 	}
+	printf("是否改正对流层\n1. 是\t2. 否\n");
+	cin >> Hop_used;
 	return 1;
 }
 
@@ -350,6 +353,8 @@ double Ele_Angle(XYZ *SatPos, XYZ *RcvPos, int sys)
 // Hopefiled对流层改正(m)
 double Hopefield(double E, double H)
 {
+	if (Hop_used == 2)
+		return 0;
 	double Ts = T0 - 0.0065 * (H - H0);
 	double hd = 40136 + 148.72 * (Ts - 273.16);
 	double Ps = P0 * pow(1 - 0.000026 * (H - H0), 5.225);
@@ -365,6 +370,8 @@ double Hopefield(double E, double H)
 
 double Hopefield(XYZ *SatPos, XYZ *RcvPos, int sys)
 {
+	if (Hop_used == 2)
+		return 0;
 	if (SatPos->X == 0 && SatPos->Y == 0 && SatPos->Z == 0)
 	{
 		return 0;
