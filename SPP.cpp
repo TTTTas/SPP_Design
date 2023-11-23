@@ -58,10 +58,18 @@ int main()
     CfgInfo.ObsDatFile = logpath.c_str();
     CfgInfo.ResDatFile = pospath.c_str();
 
+    FILE* tempfile;
+    string path = "D:/GitHub/SPP_Design/报告/双频双系统.pos";
+
     switch (choice)
     {
     case 1:
         readfile("NovatelOEM20211114-01.log", RANGE, GPS_EPH, BDS_EPH);
+        if ((tempfile = fopen(path.c_str(), "w")) == NULL)
+        {
+            printf("The pos file % s was not opened\n", path.c_str());
+            exit(0);
+        }
         for (int i = 0; i < RANGE.size(); i++)
         {
             if (i > 0)
@@ -69,7 +77,9 @@ int main()
             if (Cal_SPP(result, RANGE[i], GPS_EPH, BDS_EPH, dt_epoch, first))
                 first = false;
             result->OUTPUT();
+            result->WRITEOUTPUT(tempfile);
         }
+        fclose(tempfile);
         break;
     case 2:
         if (OpenSocket(NetGps, CfgInfo.NetIP, CfgInfo.NetPort) == false)
@@ -89,7 +99,7 @@ int main()
         }
         while (1)
         {
-            Sleep(980);
+            Sleep(970);
             if ((lenR = recv(NetGps, (char *)curbuff, MAXRAWLEN, 0)) > 0) // 读取数据
             {
                 printf("%5d ", lenR);

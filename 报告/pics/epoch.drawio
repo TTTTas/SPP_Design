@@ -1,0 +1,41 @@
+<mxfile host="Electron" modified="2023-11-17T13:24:22.482Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/22.0.3 Chrome/114.0.5735.289 Electron/25.8.4 Safari/537.36" etag="Dient70raZSKPgB90NRp" version="22.0.3" type="device">
+  <diagram name="第 1 页" id="FdwuOdAJ5ioro038BymV">
+    <mxGraphModel dx="1038" dy="844" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="X3vj6hwvmeyu9zKs2CTb-3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="X3vj6hwvmeyu9zKs2CTb-1" target="X3vj6hwvmeyu9zKs2CTb-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="X3vj6hwvmeyu9zKs2CTb-1" value="计算信号发射时间初值" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="70" y="380" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="X3vj6hwvmeyu9zKs2CTb-5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="X3vj6hwvmeyu9zKs2CTb-2" target="X3vj6hwvmeyu9zKs2CTb-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="X3vj6hwvmeyu9zKs2CTb-2" value="钟差改正(不包括相对论效应)" style="whiteSpace=wrap;html=1;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="250" y="380" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="X3vj6hwvmeyu9zKs2CTb-8" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="X3vj6hwvmeyu9zKs2CTb-4" target="X3vj6hwvmeyu9zKs2CTb-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="X3vj6hwvmeyu9zKs2CTb-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="X3vj6hwvmeyu9zKs2CTb-4">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="640" y="409.9999999999998" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="X3vj6hwvmeyu9zKs2CTb-4" value="卫星位置计算，并在钟差上加入相对论效应改正" style="whiteSpace=wrap;html=1;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="420" y="380" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="X3vj6hwvmeyu9zKs2CTb-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="X3vj6hwvmeyu9zKs2CTb-7" target="X3vj6hwvmeyu9zKs2CTb-2">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="290" y="460" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="X3vj6hwvmeyu9zKs2CTb-7" value="计算信号发射时间" style="whiteSpace=wrap;html=1;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="420" y="480" width="120" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

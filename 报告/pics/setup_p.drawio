@@ -1,0 +1,103 @@
+<mxfile host="Electron" modified="2023-11-20T10:52:14.702Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/22.0.3 Chrome/114.0.5735.289 Electron/25.8.4 Safari/537.36" etag="YwYRheZFXm2AHjU_itkc" version="22.0.3" type="device">
+  <diagram name="第 1 页" id="jd049dtiT3xmUzjJmXcS">
+    <mxGraphModel dx="869" dy="704" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="n1OOe7igErqX2Wk3isco-3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="n1OOe7igErqX2Wk3isco-1" target="n1OOe7igErqX2Wk3isco-7" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="270" y="250" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="n1OOe7igErqX2Wk3isco-1" value="观测数据、星历数据、近似坐标输入" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="10" y="290" width="110" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="n1OOe7igErqX2Wk3isco-5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="n1OOe7igErqX2Wk3isco-7" target="n1OOe7igErqX2Wk3isco-4" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="210" y="280" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="n1OOe7igErqX2Wk3isco-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="n1OOe7igErqX2Wk3isco-4" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="150" y="310" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="n1OOe7igErqX2Wk3isco-4" value="跳至下一颗卫星" style="whiteSpace=wrap;html=1;rounded=1;" parent="1" vertex="1">
+          <mxGeometry x="240" y="404" width="60" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="n1OOe7igErqX2Wk3isco-15" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="n1OOe7igErqX2Wk3isco-7" target="n1OOe7igErqX2Wk3isco-14" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="n1OOe7igErqX2Wk3isco-7" value="判断是否存在星历数据、&lt;br&gt;数据是否过期等" style="rhombus;whiteSpace=wrap;html=1;spacingTop=6;" parent="1" vertex="1">
+          <mxGeometry x="187.5" y="250" width="165" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="n1OOe7igErqX2Wk3isco-9" value="星历&lt;br&gt;有问题" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="210" y="364" width="60" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="n1OOe7igErqX2Wk3isco-21" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="n1OOe7igErqX2Wk3isco-14" target="n1OOe7igErqX2Wk3isco-20" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="n1OOe7igErqX2Wk3isco-14" value="计算卫星坐标、速度" style="rounded=1;whiteSpace=wrap;html=1;spacingTop=6;" parent="1" vertex="1">
+          <mxGeometry x="400" y="292.5" width="80" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="n1OOe7igErqX2Wk3isco-16" value="星历正常" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="340" y="280" width="70" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="n1OOe7igErqX2Wk3isco-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.25;entryDx=0;entryDy=0;" parent="1" source="n1OOe7igErqX2Wk3isco-20" target="n1OOe7igErqX2Wk3isco-4" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="580" y="430" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="n1OOe7igErqX2Wk3isco-29" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="n1OOe7igErqX2Wk3isco-20" target="n1OOe7igErqX2Wk3isco-28" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="n1OOe7igErqX2Wk3isco-20" value="计算卫星高度角" style="rhombus;whiteSpace=wrap;html=1;rounded=1;spacingTop=6;arcSize=0;" parent="1" vertex="1">
+          <mxGeometry x="520" y="270" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="n1OOe7igErqX2Wk3isco-23" value="高度角超限" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="500" y="350" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="n1OOe7igErqX2Wk3isco-31" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="n1OOe7igErqX2Wk3isco-28" target="n1OOe7igErqX2Wk3isco-4" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="580" y="420" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="740" y="424" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="n1OOe7igErqX2Wk3isco-34" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="n1OOe7igErqX2Wk3isco-28" target="n1OOe7igErqX2Wk3isco-33" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="n1OOe7igErqX2Wk3isco-28" value="计算残差" style="whiteSpace=wrap;html=1;rounded=1;spacingTop=6;arcSize=19;" parent="1" vertex="1">
+          <mxGeometry x="710" y="295" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="n1OOe7igErqX2Wk3isco-30" value="高度角正常" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="630" y="283" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="n1OOe7igErqX2Wk3isco-32" value="残差超限" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="676" y="350" width="70" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="n1OOe7igErqX2Wk3isco-36" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="n1OOe7igErqX2Wk3isco-33" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="150" y="310" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="910" y="230" />
+              <mxPoint x="150" y="230" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="n1OOe7igErqX2Wk3isco-37" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" parent="1" source="n1OOe7igErqX2Wk3isco-33" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1030" y="310.11764705882365" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="n1OOe7igErqX2Wk3isco-33" value="构造设计矩阵、权阵" style="whiteSpace=wrap;html=1;rounded=1;spacingTop=6;arcSize=19;" parent="1" vertex="1">
+          <mxGeometry x="850" y="295" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="n1OOe7igErqX2Wk3isco-35" value="残差正常" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="770" y="283" width="70" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

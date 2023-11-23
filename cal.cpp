@@ -942,17 +942,19 @@ unsigned int Cal_1(Result_DATA *data, OBS_DATA *obs, EPOCH *eph, bool first_flag
 		MatrixXd *temp_l = new MatrixXd(0, 1);
 		MatrixXd *temp_P = new MatrixXd();
 		MatrixXd Rcvpos(4, 1);
-		Rcvpos = data->Pos->block<4, 1>(0, 0);
+		Rcvpos.block(0, 0, 3, 1) = data->Pos->block<3, 1>(0, 0);
 		*data->SATES = "";
 		switch (User_SYS)
 		{
 		case SYS_GPS:
+			Rcvpos(3, 0) = (*data->Pos)(3, 0);
 			if (phase_num == 1)
 				ROWS = setup_Pos(obs->OBS_TIME, Rcvpos, obs->GPS_SATE, eph, first_flag, L1, temp_B, temp_l, temp_P, data->SATES);
 			else if (phase_num == 2)
 				ROWS = setup_Pos(obs->OBS_TIME, Rcvpos, obs->GPS_SATE, eph, first_flag, L1, L2, temp_B, temp_l, temp_P, data->SATES);
 			break;
 		case SYS_BDS:
+			Rcvpos(3, 0) = (*data->Pos)(4, 0);
 			if (phase_num == 1)
 				ROWS = setup_Pos(obs->OBS_TIME, Rcvpos, obs->BDS_SATE, eph, first_flag, B3, temp_B, temp_l, temp_P, data->SATES);
 			else if (phase_num == 2)
@@ -1865,6 +1867,8 @@ int decodestream(Result_DATA *result, unsigned char Buff[], int &d)
 				dt_e = 1;
 			else
 				dt_e = gpstime->SecOfWeek - temp_t;
+			if (dt_e = 0)
+				break;
 			temp_t = gpstime->SecOfWeek;
 			val = decode_RANGE(TempBuff + OEM4HLEN + 4, range->Sate_Num, range);
 			if (Cal_SPP(result, range, GPS_eph, BDS_eph, dt_e, first))

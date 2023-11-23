@@ -116,7 +116,6 @@ struct OBS_DATA
 	int Sate_Num = 0;
 	vector<Satellate*> GPS_SATE;
 	vector<Satellate*> BDS_SATE;
-
 };
 
 
